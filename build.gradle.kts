@@ -67,7 +67,7 @@ java {
 tasks.jar {
     inputs.property("dupedbgui", project.name)
 
-    from("LICENSE") {
+    from("LICENSE.txt") {
         rename { "${it}_${project.name}" }
     }
 }
