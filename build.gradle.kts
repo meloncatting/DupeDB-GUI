@@ -3,7 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-version = providers.gradleProperty("mod_version").get()
+version = "1.0.0-ALPHA"
 group = "net.chamosmp"
 
 repositories {
@@ -18,7 +18,7 @@ loom {
     splitEnvironmentSourceSets()
 
     mods {
-        register("template-mod") {
+        register("dupedbgui") {
             sourceSet(sourceSets.main.get())
             sourceSet(sourceSets.getByName("client"))
         }
@@ -59,7 +59,7 @@ java {
 }
 
 tasks.jar {
-    inputs.property("projectName", project.name)
+    inputs.property("dupedbgui", project.name)
 
     from("LICENSE") {
         rename { "${it}_${project.name}" }
