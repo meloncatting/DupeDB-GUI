@@ -1,0 +1,3 @@
+# True sigmas use .yml files for passwords
+auth-port: 8090 # I have an RTX 8090
+lang: en_us.json # LIKE YOU CAN CHOOSE

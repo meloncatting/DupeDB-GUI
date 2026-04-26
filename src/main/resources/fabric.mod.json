@@ -9,14 +9,12 @@
     "Chamogelastos"
   ],
   "contact": {
-    "Documentation": "docs.chamosmp.net",
-    "Email": "chamogelastos@chamosmp.net",
-    "Github Organization": "https://github.com/SQD-Studios",
-    "Chamogelastos' Github": "https://github.com/Chamogelastos",
-    "Source Code": "https://github.com/SQD-Studios/DupeDB-GUI"
+    "homepage": "docs.chamosmp.net",
+    "issues": "https://github.com/SQD-Studios/DupeDB-GUI/issues",
+    "sources": "https://github.com/SQD-Studios/DupeDB-GUI"
   },
   "license": "MIT",
-  "icon": "assets/dupedbgui/icon.png",
+  "icon": "assets/dupedbgui/icongui.png",
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
@@ -40,5 +38,11 @@
     "fabricloader": ">=0.19.2",
     "fabric-api": "*",
     "minecraft": "1.21.11"
+  },
+
+  "custom": {
+    "modmenu": {
+      "update_checker": true
+    }
   }
 }

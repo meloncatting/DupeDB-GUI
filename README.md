@@ -1,4 +1,4 @@
-![LOGO](./src/main/resources/assets/dupedbgui/icon.png)
+![LOGO](./src/main/resources/assets/dupedbgui/icongui.png)
 
 # DupeDB GUI
 A Fabric mod to open a GUI that has all the exploits DupeDB has
