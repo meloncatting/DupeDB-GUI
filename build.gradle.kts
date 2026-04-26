@@ -1,33 +1,10 @@
 plugins {
-    //id 'fabric-loom' version '1.16.1'
-    id 'maven-publish'
+    id("net.fabricmc.fabric-loom-remap") version("1.16-SNAPSHOT")
+    id("maven-publish")
 }
 
-version = project.mod_version
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
-}
-
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "dupedbgui" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-}
-
-fabricApi {
-    configureDataGeneration {
-        client = true
-    }
-}
-
-
+version = providers.gradleProperty("mod_version").get()
+group = "net.chamosmp"
 
 repositories {
     // Add repositories to retrieve artifacts from in here.
@@ -37,63 +14,63 @@ repositories {
     // for more information about repositories.
 }
 
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        register("template-mod") {
+            sourceSet(sourceSets.main.get())
+            sourceSet(sourceSets.getByName("client"))
+        }
+    }
+}
+
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
+    mappings(loom.officialMojangMappings())
+    modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.99.5+1.21")
+
 }
 
-processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "loader_version", project.loader_version
-    filteringCharset "UTF-8"
+tasks.processResources {
+    inputs.property("version", version)
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
+        expand("version" to version)
     }
 }
 
-def targetJavaVersion = 21
-tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release.set(targetJavaVersion)
-    }
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 21
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
-jar {
+tasks.jar {
+    inputs.property("projectName", project.name)
+
     from("LICENSE") {
-        rename { "${it}_${project.archives_base_name}" }
+        rename { "${it}_${project.name}" }
     }
 }
 
 // configure the maven publication
 publishing {
     publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
+        register<MavenPublication>("mavenJava") {
+            from(components["java"])
         }
     }
 
@@ -105,5 +82,6 @@ publishing {
         // retrieving dependencies.
     }
 }
+
 
 

@@ -1,11 +1,20 @@
 {
   "schemaVersion": 1,
   "id": "dupedbgui",
-  "version": "${version}",
+  "version": "1.0.0-ALPHA",
   "name": "DupeDB GUI",
   "description": "A mod to fetch data from DupeDB and display it in-game",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    "SQD Studios",
+    "Chamogelastos"
+  ],
+  "contact": {
+    "Documentation": "docs.chamosmp.net",
+    "Email": "chamogelastos@chamosmp.net",
+    "Github Organization": "https://github.com/SQD-Studios",
+    "Chamogelastos' Github": "https://github.com/Chamogelastos",
+    "Source Code": ""
+  },
   "license": "MIT",
   "icon": "assets/dupedbgui/icon.png",
   "environment": "client",
