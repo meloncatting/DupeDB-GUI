@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "dupedbgui",
-  "version": "1.0.0-ALPHA",
+  "version": "${version}",
   "name": "DupeDB GUI",
   "description": "A mod to fetch data from DupeDB and display it in-game",
   "authors": [
@@ -9,7 +9,7 @@
     "Chamogelastos"
   ],
   "contact": {
-    "homepage": "docs.chamosmp.net",
+    "homepage": "https://docs.chamosmp.net",
     "issues": "https://github.com/SQD-Studios/DupeDB-GUI/issues",
     "sources": "https://github.com/SQD-Studios/DupeDB-GUI"
   },
