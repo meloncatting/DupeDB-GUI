@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "dupedbgui",
-  "version": "${version}",
+  "version": "1.0.0-ALPHA",
   "name": "DupeDB GUI",
   "description": "A mod to fetch data from DupeDB and display it in-game",
   "authors": [
