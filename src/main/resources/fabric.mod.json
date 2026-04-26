@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "dupedbgui",
+  "version": "${version}",
+  "name": "DupeDB GUI",
+  "description": "A mod to fetch data from DupeDB and display it in-game",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/dupedbgui/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "net.chamosmp.dupedbgui.client.DupedbguiDataGenerator"
+    ],
+    "client": [
+      "net.chamosmp.dupedbgui.client.DupedbguiClient"
+    ],
+    "main": [
+      "net.chamosmp.dupedbgui.Dupedbgui"
+    ]
+  },
+  "mixins": [
+    "dupedbgui.mixins.json",
+    {
+      "config": "dupedbgui.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
