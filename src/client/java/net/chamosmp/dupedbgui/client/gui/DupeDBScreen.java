@@ -198,15 +198,9 @@ public class DupeDBScreen extends Screen {
     private void renderCard(GuiGraphics g, Exploit e, int x, int y, int w, int mx, int my) {
         boolean hovered = mx >= x && mx < x + w && my >= y && my < y + CARD_H;
         g.fill(x, y, x + w, y + CARD_H, hovered ? CARD_HOVER : CARD_BG);
+        g.fill(x, y + CARD_H - 1, x + w, y + CARD_H, 0xFF222222);
 
-        int accentColor = statusColor(e.status);
-        if (e.accentColor != null && !e.accentColor.isBlank()) {
-            try { accentColor = ensureVisible(0xFF000000 | Integer.parseInt(e.accentColor.replace("#", ""), 16)); }
-            catch (Exception ignored) {}
-        }
-        g.fill(x, y, x + 4, y + CARD_H, accentColor);
-
-        int thumbX = x + 6;
+        int thumbX = x + 8;
         int thumbY = y + (CARD_H - THUMB_H) / 2;
 
         String thumbUrl = e.getThumbnailUrl();
@@ -216,39 +210,37 @@ public class DupeDBScreen extends Screen {
             if (info != null) {
                 g.blit(info.id, thumbX, thumbY, THUMB_W, THUMB_H, 0f, 0f, 1f, 1f);
             } else {
-                g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF111122);
-                g.drawCenteredString(font, "§8...", thumbX + THUMB_W / 2, thumbY + (THUMB_H - 8) / 2, 0xFFFFFFFF);
+                g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF161616);
             }
         } else {
-            g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF111111);
-            g.drawCenteredString(font, "§8[no img]", thumbX + THUMB_W / 2, thumbY + (THUMB_H - 8) / 2, 0xFFFFFFFF);
+            g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF161616);
         }
 
-        int tx = thumbX + THUMB_W + 8;
-        int ty = y + 7;
+        int tx = thumbX + THUMB_W + 10;
+        int ty = y + 8;
 
         String name = e.getDisplayName();
-        int maxNameW = w - (tx - x) - 50;
-        if (font.width(name) > maxNameW) {
-            name = truncate(name, maxNameW);
-        }
+        int maxNameW = w - (tx - x) - 55;
+        if (font.width(name) > maxNameW) name = truncate(name, maxNameW);
         g.drawString(font, name, tx, ty, 0xFFFFFFFF, true);
 
-        String typeBadge = "[" + e.getTypeLabel() + "]";
-        int statusColor  = switch (e.status != null ? e.status : "") {
+        int sc = switch (e.status != null ? e.status : "") {
             case "verified" -> VERIFIED_C;
             case "patched"  -> PATCHED_C;
             default         -> UNVERIF_C;
         };
-        String statusBadge = "[" + e.getStatusLabel() + "]";
-        g.drawString(font, "§7" + typeBadge, tx, ty + 12, 0xFFAAAAAA, false);
-        g.drawString(font, statusBadge, tx + font.width(typeBadge) + 5, ty + 12, statusColor, false);
+        String typeStr   = e.getTypeLabel();
+        String statusStr = e.getStatusLabel();
+        int    typeW     = font.width(typeStr);
+        g.drawString(font, typeStr,   tx,                              ty + 13, 0xFF888888, false);
+        g.drawString(font, " • ",     tx + typeW,                      ty + 13, 0xFF444444, false);
+        g.drawString(font, statusStr, tx + typeW + font.width(" • "),  ty + 13, sc,         false);
 
-        String meta = "by " + (e.author != null ? e.author : "?") + " • " + fmtDate(e.dateSubmitted);
-        g.drawString(font, meta, tx, ty + 24, 0xFF888888, false);
+        String meta = "by " + (e.author != null ? e.author : "?") + "  " + fmtDate(e.dateSubmitted);
+        g.drawString(font, meta, tx, ty + 25, 0xFF555555, false);
 
         String votes = "▲ " + e.upvotes;
-        g.drawString(font, votes, x + w - font.width(votes) - 8, y + (CARD_H - 8) / 2, 0xFF55AA55, false);
+        g.drawString(font, votes, x + w - font.width(votes) - 10, y + (CARD_H - 8) / 2, 0xFF3D8A3D, false);
     }
 
     @Override
@@ -301,30 +293,6 @@ public class DupeDBScreen extends Screen {
     private String fmtDate(String iso) {
         if (iso == null || iso.length() < 10) return "?";
         return iso.substring(0, 10);
-    }
-
-    private int statusColor(String status) {
-        if (status == null) return UNVERIF_C;
-        return switch (status) {
-            case "verified" -> VERIFIED_C;
-            case "patched"  -> PATCHED_C;
-            default         -> UNVERIF_C;
-        };
-    }
-
-    private int ensureVisible(int color) {
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8)  & 0xFF;
-        int b = color & 0xFF;
-        double lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        if (lum < 90) {
-            double scale = 150.0 / Math.max(lum, 1);
-            r = Math.min(255, (int)(r * scale));
-            g = Math.min(255, (int)(g * scale));
-            b = Math.min(255, (int)(b * scale));
-            return 0xFF000000 | (r << 16) | (g << 8) | b;
-        }
-        return color;
     }
 
     private String truncate(String text, int maxPx) {
