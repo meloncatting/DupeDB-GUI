@@ -10,10 +10,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImageCache {
     public static class TexInfo {
@@ -28,9 +28,9 @@ public class ImageCache {
         }
     }
 
-    private static final Map<String, TexInfo> CACHE = new HashMap<>();
+    private static final Map<String, TexInfo> CACHE = new ConcurrentHashMap<>();
     private static final Set<String> LOADING = ConcurrentHashMap.newKeySet();
-    private static int counter = 0;
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
     public static TexInfo get(String url) {
         return CACHE.get(url);
@@ -47,7 +47,7 @@ public class ImageCache {
                 if (image == null) { LOADING.remove(url); return; }
                 int w = image.getWidth();
                 int h = image.getHeight();
-                int idx = counter++;
+                int idx = COUNTER.getAndIncrement();
                 Minecraft.getInstance().execute(() -> {
                     try {
                         DynamicTexture tex = new DynamicTexture(() -> "dupedbgui_img_" + idx, image);

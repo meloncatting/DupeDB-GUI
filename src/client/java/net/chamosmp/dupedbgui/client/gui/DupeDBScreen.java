@@ -205,11 +205,16 @@ public class DupeDBScreen extends Screen {
 
         String thumbUrl = e.getThumbnailUrl();
         if (thumbUrl == null) thumbUrl = e.getYoutubeThumbnailUrl();
-        boolean thumbVisible = thumbY >= HEADER_H && thumbY + THUMB_H <= height;
-        ImageCache.TexInfo info = (thumbUrl != null && thumbVisible) ? ImageCache.get(thumbUrl) : null;
-        if (info != null) {
-            g.blit(info.id, thumbX, thumbY, THUMB_W, THUMB_H, 0f, 0f, 1f, 1f);
-        } else {
+        boolean thumbFullyVisible = isRectFullyVisible(thumbX, thumbY, THUMB_W, THUMB_H);
+        if (thumbUrl != null && thumbFullyVisible) {
+            ImageCache.load(thumbUrl);
+            ImageCache.TexInfo info = ImageCache.get(thumbUrl);
+            if (info != null) {
+                g.blit(info.id, thumbX, thumbY, THUMB_W, THUMB_H, 0f, 0f, 1f, 1f);
+            } else {
+                g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF161616);
+            }
+        } else if (thumbUrl == null) {
             g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF161616);
         }
 
@@ -238,6 +243,10 @@ public class DupeDBScreen extends Screen {
 
         String votes = "▲ " + e.upvotes;
         g.drawString(font, votes, x + w - font.width(votes) - 10, y + (CARD_H - 8) / 2, 0xFF3D8A3D, false);
+    }
+
+    private boolean isRectFullyVisible(int x, int y, int w, int h) {
+        return x >= 0 && x + w <= width && y >= HEADER_H && y + h <= height;
     }
 
     @Override
