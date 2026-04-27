@@ -205,13 +205,10 @@ public class DupeDBScreen extends Screen {
 
         String thumbUrl = e.getThumbnailUrl();
         if (thumbUrl == null) thumbUrl = e.getYoutubeThumbnailUrl();
-        if (thumbUrl != null) {
-            ImageCache.TexInfo info = ImageCache.get(thumbUrl);
-            if (info != null) {
-                g.blit(info.id, thumbX, thumbY, THUMB_W, THUMB_H, 0f, 0f, 1f, 1f);
-            } else {
-                g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF161616);
-            }
+        boolean thumbVisible = thumbY >= HEADER_H && thumbY + THUMB_H <= height;
+        ImageCache.TexInfo info = (thumbUrl != null && thumbVisible) ? ImageCache.get(thumbUrl) : null;
+        if (info != null) {
+            g.blit(info.id, thumbX, thumbY, THUMB_W, THUMB_H, 0f, 0f, 1f, 1f);
         } else {
             g.fill(thumbX, thumbY, thumbX + THUMB_W, thumbY + THUMB_H, 0xFF161616);
         }
